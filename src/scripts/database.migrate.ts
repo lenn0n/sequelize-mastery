@@ -1,58 +1,20 @@
 require('@utils/custom.console');
-require('dotenv').config();
 
-const { SequelizeInstance, DataTypes } = require("@hooks/useSequelize")
-const { createDatabase } = require("@hooks/useMysql")
+import { createDatabase } from "@hooks/useMysql";
+import { StudentModel } from "@database/models/student.model";
 
 const syncTableModels = async () => {
-  console.warn("Syncing table and models...");
-  const User = SequelizeInstance.define('user', {
-    user_id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    password: {
-      type: DataTypes.STRING,
-    },
-    age: {
-      type: DataTypes.INTEGER,
-      defaultValue: 21
-    }
-  },
-    {
-      // freezeTableName: true,
-      // timestamps: false
-    }
-  );
+  console.warn("Syncing models...");
 
-  // DROP TABLE AND CREATE NEW
-  //  force: true
-
-  User.sync({ alter: true })
+  StudentModel.sync({ alter: true })
     .then(() => {
-      console.info("Table and models synced successfully!");
-      return User.create({
-        username: 'lennon',
-        password: 'test',
-        age: 27
-      })
-    })
-    .then(()=> {
+      console.info("Student model synced successfully!");
       process.exit(0);
     })
     .catch(() => {
-      console.log("ERR: An error occured while trying to sync data.");
-
+      console.log("ERR: An error occured while trying to sync student model.");
       process.exit(0);
     })
-
-  // DROP TABLE - NOT RECOMMENDED
-  // SequelizeInstance.drop({ match: /_test$/});
 }
 
 createDatabase()
