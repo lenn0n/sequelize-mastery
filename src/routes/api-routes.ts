@@ -14,24 +14,24 @@ router.get("/students", async(req: Request, res: Response) => {
 
 router.post("/students", async (req: Request, res: Response) => {
   if (!req.body.name) {
-    res.status(404).json({
+   return res.status(404).json({
       error: "Please provide name."
     })
   }
 
   if (!req.body.favorite_class) {
-    res.status(404).json({
+    return res.status(404).json({
       error: "Please provide favorite class."
     })
   }
 
   if (!req.body.school_year) {
-    res.status(404).json({
+    return res.status(404).json({
       error: "Please provide school year."
     })
   }
 
-  await CreateStudent(req.body).then(() => {
+  return await CreateStudent(req.body).then(() => {
     res.send("Student added successfully.")
   })
 
