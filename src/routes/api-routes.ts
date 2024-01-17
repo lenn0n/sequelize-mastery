@@ -8,7 +8,7 @@ router.get("/", (req: Request, res: Response) => {
 
 router.get("/students", async(req: Request, res: Response) => {
   await GetStudents().then((data)=>{
-    res.send(data)
+    res.status(200).json(data)
   })
 })
 
