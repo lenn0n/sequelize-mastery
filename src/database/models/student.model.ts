@@ -11,7 +11,10 @@ const StudentModel = SequelizeInstance.define('student', {
     type: DataTypes.STRING(255),
     allowNull: false,
     validate: {
-      len: [4, 20]
+      len: {
+        args: [4, 20],
+        msg: "The name should be between 4 to 20 characters only."
+      }
     }
   },
   favorite_class: {

@@ -1,6 +1,6 @@
 require('dotenv').config();
 const Sequelize = require("sequelize");
-const { Op, DataTypes, fn, col } = Sequelize;
+const { Op, DataTypes, fn, col, QueryTypes } = Sequelize;
 
 const SequelizeInstance = new Sequelize(
   process.env.DB_SCHEMA,
@@ -17,5 +17,6 @@ export {
   Op,
   DataTypes,
   fn,
-  col
+  col,
+  QueryTypes
 }
