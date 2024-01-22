@@ -1,41 +1,49 @@
 
-import { StudentModel } from "@database/models/student.model";
-import { fn, col, Op, SequelizeInstance, QueryTypes } from "@hooks/useSequelize";
+import { Request, Response } from "express";
+import { getStudentsByYear, createStudent } from "@services/student.service";
 
-const CreateStudent = async (data: any) => {
-  // Take note when using 'bulkCreate': the error response is different from using 'create' only.
-  // It should be passed here as array and iterate the error messages from catch.
-  return await StudentModel.create({ ...data }, { validate: true })
+const AddStudent =  async (req: Request, res: Response) => {
+  if (!req.body.name) {
+    return res.status(404).json({
+      error: "Please provide name."
+    })
+  }
+
+  if (!req.body.favorite_class) {
+    return res.status(404).json({
+      error: "Please provide favorite class."
+    })
+  }
+
+  if (!req.body.school_year) {
+    return res.status(404).json({
+      error: "Please provide school year."
+    })
+  }
+
+  return await createStudent(req.body).then(() => {
+    res.send("Student added successfully.")
+  })
+  .catch((err) => {
+    err.errors.map((eObj: any) => {
+      console.log(eObj.message)
+      return res.status(422).json({
+        message: eObj.message,
+        payload: eObj.instance,
+        // message: eObj.errors.errors[0].message <-- bulkCreate
+      })
+    })
+  })
 }
 
-const GetStudents = async () => {
-  return await SequelizeInstance.query(
-    "SELECT * FROM student WHERE :col IN (:year)",
-    {
-      type: QueryTypes.SELECT,
-      replacements: { year: [2013, 2012], col: 'school_year'}
-    }
-  )
-
-  // return await StudentModel.findAll({
-  //   attributes: [
-  //     ["name", "full_name"],
-  //     ["favorite_class", "fav_class"],
-  //     ["school_year", "year"],
-  //     ["student_id", "id"]
-  //   ],
-  //   where: {
-  //     school_year: {
-  //       [Op.and]: [
-  //         { [Op.gt]: 2000 },
-  //         { [Op.lt]: 2013 },
-  //       ]
-  //     }
-  //   }
-  // })
+const GetStudents = async (req: Request, res: Response) => {
+  const years = [ 2013 ]
+  await getStudentsByYear(years).then((data) => {
+    res.status(200).json(data)
+  })
 }
 
 export {
-  CreateStudent,
+  AddStudent,
   GetStudents
 }
