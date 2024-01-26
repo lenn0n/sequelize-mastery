@@ -1,9 +1,6 @@
 import { Router } from "express";
-import { AddStudent, GetStudents } from "@controllers/users/student.controller"
-
+import { getLotList } from "@services/lot.service";
 const router = Router();
 
-router.get("/students", GetStudents)
-router.post("/students", AddStudent)
-
+router.get("/lot", getLotList)
 export default router;
