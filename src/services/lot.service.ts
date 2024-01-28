@@ -45,13 +45,13 @@ const countAvailableUnits = async (params?: {}) => {
 }
 
 type UpdateDiscountType = {
-  discount: number,
+  fields: {},
   project_id: number,
   lot_id: number
 }
 
-const updateDiscountPrice = async (payload: UpdateDiscountType) => {
-  return await LotModel.update({ discount: payload.discount }, {
+const updateLotInfo = async (payload: UpdateDiscountType) => {
+  return await LotModel.update({ ...payload.fields }, {
     where: {
       [Op.and]: [
         { project_id: payload.project_id },
@@ -69,5 +69,5 @@ export {
   getLotList,
   countAvailableUnits,
   insertLotInformation,
-  updateDiscountPrice
+  updateLotInfo
 }

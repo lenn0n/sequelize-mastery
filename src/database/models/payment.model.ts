@@ -15,7 +15,7 @@ const PaymentModel = SequelizeInstance.define("payment",
       type: DataTypes.DOUBLE,
       allowNull: false,
     },
-    transfer_type: {
+    method_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
