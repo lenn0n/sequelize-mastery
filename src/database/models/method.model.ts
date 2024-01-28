@@ -1,16 +1,16 @@
 import { SequelizeInstance, DataTypes } from "@hooks/useSequelize";
 
-const ClientModel = SequelizeInstance.define("client",
+const MethodModel = SequelizeInstance.define("method",
   {
-    client_id: {
+    method_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
     name: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(255),
       allowNull: false
-    }
+    },
   },
   {
     freezeTableName: true
@@ -18,5 +18,5 @@ const ClientModel = SequelizeInstance.define("client",
 )
 
 export {
-  ClientModel
+  MethodModel
 }

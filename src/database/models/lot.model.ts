@@ -7,6 +7,10 @@ const LotModel = SequelizeInstance.define("lot",
       primaryKey: true,
       autoIncrement: true,
     },
+    project_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     client_id: {
       type: DataTypes.INTEGER,
     },
@@ -31,6 +35,7 @@ const LotModel = SequelizeInstance.define("lot",
     },
     remarks: {
       type: DataTypes.STRING(255),
+      defaultValue: "None"
     },
     discount: {
       type: DataTypes.INTEGER

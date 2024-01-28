@@ -1,6 +1,10 @@
+import { handleCountAvailableLot, insertLot, retrieveLot } from "@controllers/lot.controller";
 import { Router } from "express";
-import { getLotList } from "@services/lot.service";
+
 const router = Router();
 
-router.get("/lot", getLotList)
+router.get("/lot", retrieveLot)
+router.get("/available-lot", handleCountAvailableLot)
+router.post("/lot", insertLot)
+
 export default router;

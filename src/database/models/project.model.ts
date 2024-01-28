@@ -1,8 +1,8 @@
 import { SequelizeInstance, DataTypes } from "@hooks/useSequelize";
 
-const ClientModel = SequelizeInstance.define("client",
+const ProjectModel = SequelizeInstance.define("project",
   {
-    client_id: {
+    project_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -18,5 +18,5 @@ const ClientModel = SequelizeInstance.define("client",
 )
 
 export {
-  ClientModel
+  ProjectModel
 }

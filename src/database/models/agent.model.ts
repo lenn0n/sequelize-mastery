@@ -11,6 +11,9 @@ const AgentModel = SequelizeInstance.define("agent",
       type: DataTypes.STRING(50),
       allowNull: false
     }
+  },
+  {
+    freezeTableName: true
   }
 )
 
