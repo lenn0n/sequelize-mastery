@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { countAvailableUnits, getLotList, insertLotInformation } from "@services/lot.service"
+import { countAvailableUnits, getLotList, insertLotInformation, updateDiscountPrice } from "@services/lot.service"
 import { literal } from "@hooks/useSequelize";
 
 const retrieveLot = async (req: Request, res: Response) => {
@@ -7,7 +7,8 @@ const retrieveLot = async (req: Request, res: Response) => {
     params: {
       attributes: {
         include: [
-          [literal(`(SELECT name FROM client WHERE client.client_id = lot.client_id)`), 'client_name']
+          [literal(`(SELECT name FROM client WHERE client.client_id = lot.client_id)`), 'client_name'],
+          [literal(`(SELECT name FROM project WHERE project.project_id = lot.project_id)`), 'project_name'],
         ]
       }
     }
@@ -16,14 +17,68 @@ const retrieveLot = async (req: Request, res: Response) => {
   })
 }
 
-const handleCountAvailableLot = async  (req: Request, res: Response) => {
-  if (!req.query.category){
+const handleCountAvailableLot = async (req: Request, res: Response) => {
+  // Check if category is present
+  if (!req.query.category) {
     return res.status(422).send("Please provide category.")
   }
-  
-  return await countAvailableUnits({ category: req.query.category}).then((data) => {
+
+  // Check if project id is present
+  if (!req.query.project_id) {
+    return res.status(422).send("Please provide project.")
+  }
+
+  // Construct payload
+  const payload = {
+    category: req.query.category,
+    project_id: req.query.project_id,
+  }
+
+  return await countAvailableUnits(payload).then((data) => {
     res.status(200).json(data)
   })
+}
+
+const handleUpdateDiscountPrice = async (req: Request, res: Response) => {
+  // Check if project id is present
+  if (!req.body.project_id) {
+    return res.status(422).send("Please provide project.")
+  }
+
+  // Check if lot id is present
+  if (!req.body.lot_id) {
+    return res.status(422).send("Please provide lot.")
+  }
+
+   // Check if discount is present
+   if (!req.body.discount) {
+    return res.status(422).send("Please provide discount price.")
+  }
+
+  // Construct payload
+  const payload = {
+    lot_id: req.body.lot_id,
+    project_id: req.body.project_id,
+    discount: req.body.discount,
+  }
+
+  return await updateDiscountPrice(payload)
+    .then((data) => {
+      if (data[0]){
+        res.status(200).json({
+          message: "Successfully updated lot discount price.",
+        })
+      } else{
+        res.status(422).json({
+          message: "Couldn't find any information on this project. " + 
+          "ERR: lot.controlller.ts (handleUpdateDiscountPrice)",
+        })
+      }
+    })
+    .catch((err) => {
+      res.status(422).send("There was a problem while updating lot information. "+ "ERR: lot.controlller.ts (updateDiscountPrice)",)
+    })
+
 }
 
 const insertLot = async (req: Request, res: Response) => {
@@ -47,20 +102,22 @@ const insertLot = async (req: Request, res: Response) => {
     return res.status(422).send("Please provide lot price per sqm.")
   }
 
-
   return await insertLotInformation(req.body)
     .then((data) => {
-      res.status(200).json(data)
+      res.status(200).json({
+        message: "Successfully added lot.",
+        data: data
+      })
     })
     .catch((err) => {
-      console.log(err);
-
-      res.status(422).send("There was a problem inserting lot information.")
+      res.status(422).send("There was a problem inserting lot information." + 
+      "ERR: lot.controlller.ts (insertLot)",)
     })
 }
 
 export {
   retrieveLot,
   insertLot,
-  handleCountAvailableLot
+  handleCountAvailableLot,
+  handleUpdateDiscountPrice
 }

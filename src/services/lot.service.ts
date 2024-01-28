@@ -14,40 +14,49 @@ const getLotList = async ({ params }: QueryParams) => {
   })
     .then((data: any) => {
       let returnData: any[] = []
-      data.map((lot: any) => {
+      data.map((data: any) => {
+        const lot = data.toJSON()
+        const tcpPrice = lot.sqm * lot.price_per_sqm;
         returnData.push({
-          ...lot.toJSON(),
-          tcp: lot.toJSON().sqm * lot.toJSON().price_per_sqm
+          ...lot,
+          tcp: tcpPrice,
+          net_tcp: tcpPrice - (tcpPrice * (lot.discount / 100))
         })
       })
       return returnData
     })
 }
 
-const countAvailableUnits = async (params?: any) => {
-  // return await SequelizeInstance.query(
-  //   "SELECT COUNT(*) FROM lot WHERE client_id IS null",
-  //   {
-  //     type: QueryTypes.SELECT,
-  //     // nest: true
-  //     // replacements: { 
-  //     //   year: years
-  //     // }  
-  //   }
-  // )
-
+const countAvailableUnits = async (params?: {}) => {
   return await LotModel.count({
     where: {
-     [Op.and]: {
-      client_id: null,
-      ...params
-     }
+      [Op.and]: {
+        client_id: null,
+        ...params
+      }
     }
   })
-  .then((count : number) => {
-    return {
-      ...params,
-      available: count
+    .then((count: number) => {
+      return {
+        ...params,
+        available: count
+      }
+    })
+}
+
+type UpdateDiscountType = {
+  discount: number,
+  project_id: number,
+  lot_id: number
+}
+
+const updateDiscountPrice = async (payload: UpdateDiscountType) => {
+  return await LotModel.update({ discount: payload.discount }, {
+    where: {
+      [Op.and]: [
+        { project_id: payload.project_id },
+        { lot_id: payload.lot_id },
+      ]
     }
   })
 }
@@ -59,5 +68,6 @@ const insertLotInformation = async (params: any) => {
 export {
   getLotList,
   countAvailableUnits,
-  insertLotInformation
+  insertLotInformation,
+  updateDiscountPrice
 }
