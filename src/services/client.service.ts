@@ -1,0 +1,39 @@
+import { ClientModel } from "@database/models/client.model";
+
+const getClientList = async ({ params }: any) => {
+  return await ClientModel.findAll({
+    ...params,
+    attributes: {
+      ...params.attributes,
+      exclude: ['createdAt', 'updateAt']
+    }
+  })
+}
+
+type UpdateClientType = {
+  fields: {},
+  client_id: number
+}
+
+const updateClientInfo = async (payload: UpdateClientType) => {
+  return await ClientModel.update({ ...payload.fields }, {
+    where: {
+      client_id: payload.client_id
+    }
+  })
+}
+
+const insertClientInfo = async (params: any) => {
+  return await ClientModel.create(params)
+}
+
+const destroyClient = async (params: any) => {
+  return await ClientModel.destroy(params)
+}
+
+export {
+  getClientList,
+  updateClientInfo,
+  insertClientInfo,
+  destroyClient
+}

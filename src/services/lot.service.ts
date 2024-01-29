@@ -65,9 +65,14 @@ const insertLotInformation = async (params: any) => {
   return await LotModel.create(params)
 }
 
+const destroyLot = async (params: any) => {
+  return await LotModel.destroy(params)
+}
+
 export {
   getLotList,
   countAvailableUnits,
   insertLotInformation,
-  updateLotInfo
+  updateLotInfo,
+  destroyLot
 }

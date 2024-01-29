@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { countAvailableUnits, getLotList, insertLotInformation, updateLotInfo } from "@services/lot.service"
+import { countAvailableUnits, destroyLot, getLotList, insertLotInformation, updateLotInfo } from "@services/lot.service"
 import { literal } from "@hooks/useSequelize";
 
 const retrieveLot = async (req: Request, res: Response) => {
@@ -64,24 +64,29 @@ const updateLot = async (req: Request, res: Response) => {
 
   return await updateLotInfo(payload)
     .then((data) => {
-      if (data[0]){
+      if (data[0]) {
         res.status(200).json({
           message: "Successfully updated lot information.",
         })
-      } else{
+      } else {
         res.status(422).json({
-          message: "Couldn't find any information on this project. " + 
-          "ERR: lot.controlller.ts (updateLot)",
+          message: "Couldn't find any information on this project. " +
+            "ERR: lot.controlller.ts (updateLot)",
         })
       }
     })
     .catch((err) => {
-      res.status(422).send("There was a problem while updating lot information. "+ "ERR: lot.controlller.ts (updateLotInfo)",)
+      res.status(422).send("There was a problem while updating lot information. " + "ERR: lot.controlller.ts (updateLotInfo)",)
     })
 
 }
 
 const insertLot = async (req: Request, res: Response) => {
+  // Check if 'AREA' is present.
+  if (!req.body.project_id) {
+    return res.status(422).send("Please provide project id.")
+  }
+
   // Check if 'AREA' is present.
   if (!req.body.area) {
     return res.status(422).send("Please provide lot area.")
@@ -110,14 +115,36 @@ const insertLot = async (req: Request, res: Response) => {
       })
     })
     .catch((err) => {
-      res.status(422).send("There was a problem inserting lot information." + 
-      "ERR: lot.controlller.ts (insertLot)",)
+      res.status(422).send("There was a problem inserting lot information." +
+        "ERR: lot.controlller.ts (insertLot)" + err)
     })
 }
+
+const removeLot = async (req: Request, res: Response) => {
+  if (!req.body.agent_id) {
+    return res.status(422).send("Please provide agent id.")
+  }
+
+  return await destroyLot({ agent_id: req.body.agent_id })
+    .then((data) => {
+      if (data[0]) {
+        res.status(200).json({
+          message: "Successfully deleted agent data.",
+        })
+      } else {
+        res.status(422).json({
+          message: "Couldn't find any information on this agent. " +
+            "ERR: agent.controlller.ts (deleteLot)",
+        })
+      }
+    })
+}
+
 
 export {
   retrieveLot,
   insertLot,
   handleCountAvailableLot,
-  updateLot
+  updateLot,
+  removeLot
 }
