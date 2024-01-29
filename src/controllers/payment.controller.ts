@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { Op } from "@hooks/useSequelize"
+import { Op, literal } from "@hooks/useSequelize"
 import { destroyPayment, getPaymentList, insertPaymentInfo, updatePaymentInfo } from "@services/payment.service"
 
 const retrievePayment = async (req: Request, res: Response) => {
@@ -26,6 +26,12 @@ const retrievePayment = async (req: Request, res: Response) => {
   }
 
   let payload = {
+    attributes:{
+      include: [
+        [literal(`(SELECT name FROM method WHERE method.method_id = payment.method_id)`), 'method'],
+        [literal(`(SELECT name FROM client WHERE client.client_id = payment.client_id)`), 'client'],
+      ]
+    },
     where: {
       [Op.and]: filter
     },
