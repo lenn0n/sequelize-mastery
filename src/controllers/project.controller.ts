@@ -1,5 +1,5 @@
-import { destroyProject, getProjectList, insertProjectInfo, updateProjectInfo } from "@services/project.service";
 import { Request, Response } from "express";
+import { destroyProject, getProjectList, insertProjectInfo, updateProjectInfo } from "@services/project.service";
 
 const retrieveProject = async (req: Request, res: Response) => {
   let query : { project_id?: number } = {};
@@ -73,11 +73,11 @@ const insertProject = async (req: Request, res: Response) => {
 }
 
 const removeProject = async (req: Request, res: Response) => {
-  if (!req.body.project_id) {
+  if (!req.query.project_id) {
     return res.status(422).send("Please provide project id.")
   }
 
-  return await destroyProject({ project_id: req.body.project_id })
+  return await destroyProject({ project_id: req.query.project_id })
     .then((deleted) => {
       if (deleted) {
         res.status(200).json({

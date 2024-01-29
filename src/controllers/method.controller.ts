@@ -1,5 +1,5 @@
-import { destroyMethod, getMethodList, insertMethodInfo, updateMethodInfo } from "@services/method.service";
 import { Request, Response } from "express";
+import { destroyMethod, getMethodList, insertMethodInfo, updateMethodInfo } from "@services/method.service";
 
 const retrieveMethod = async (req: Request, res: Response) => {
   let query : { method_id?: number } = {};
@@ -73,11 +73,11 @@ const insertMethod = async (req: Request, res: Response) => {
 }
 
 const removeMethod = async (req: Request, res: Response) => {
-  if (!req.body.method_id) {
+  if (!req.query.method_id) {
     return res.status(422).send("Please provide method id.")
   }
 
-  return await destroyMethod({ method_id: req.body.method_id })
+  return await destroyMethod({ method_id: req.query.method_id })
     .then((deleted) => {
       if (deleted) {
         res.status(200).json({

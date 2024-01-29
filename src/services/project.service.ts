@@ -28,7 +28,11 @@ const insertProjectInfo = async (params: any) => {
 }
 
 const destroyProject = async (params: any) => {
-  return await ProjectModel.destroy(params)
+  return await ProjectModel.destroy({
+    where: {
+      ...params
+    }
+  })
 }
 
 export {

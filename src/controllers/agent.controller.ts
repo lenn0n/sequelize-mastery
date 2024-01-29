@@ -1,5 +1,5 @@
-import { destroyAgent, getAgentList, insertAgentInfo, updateAgentInfo } from "@services/agent.service";
 import { Request, Response } from "express";
+import { destroyAgent, getAgentList, insertAgentInfo, updateAgentInfo } from "@services/agent.service";
 
 const retrieveAgent = async (req: Request, res: Response) => {
   let query : { agent_id?: number } = {};
@@ -73,11 +73,11 @@ const insertAgent = async (req: Request, res: Response) => {
 }
 
 const removeAgent = async (req: Request, res: Response) => {
-  if (!req.body.agent_id) {
+  if (!req.query.agent_id) {
     return res.status(422).send("Please provide agent id.")
   }
 
-  return await destroyAgent({ agent_id: req.body.agent_id })
+  return await destroyAgent({ agent_id: req.query.agent_id })
     .then((deleted) => {
       if (deleted) {
         res.status(200).json({

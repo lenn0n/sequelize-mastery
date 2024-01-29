@@ -66,7 +66,11 @@ const insertLotInformation = async (params: any) => {
 }
 
 const destroyLot = async (params: any) => {
-  return await LotModel.destroy(params)
+  return await LotModel.destroy({
+    where: {
+      ...params
+    }
+  })
 }
 
 export {

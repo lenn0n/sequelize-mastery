@@ -18,13 +18,17 @@ const insertPaymentInfo = async (params: any) => {
   return await PaymentModel.create(params)
 }
 
-const deletePayment = async (params: any) => {
-  return await PaymentModel.destroy(params)
-} 
+const destroyPayment = async (params: any) => {
+  return await PaymentModel.destroy({
+    where: {
+      ...params
+    }
+  })
+}
 
 export {
   getPaymentList,
   updatePaymentInfo,
-  deletePayment,
+  destroyPayment,
   insertPaymentInfo
 }

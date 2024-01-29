@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { countAvailableUnits, destroyLot, getLotList, insertLotInformation, updateLotInfo } from "@services/lot.service"
 import { literal } from "@hooks/useSequelize";
+import { countAvailableUnits, destroyLot, getLotList, insertLotInformation, updateLotInfo } from "@services/lot.service"
 
 const retrieveLot = async (req: Request, res: Response) => {
   return await getLotList({
@@ -121,11 +121,11 @@ const insertLot = async (req: Request, res: Response) => {
 }
 
 const removeLot = async (req: Request, res: Response) => {
-  if (!req.body.agent_id) {
+  if (!req.query.agent_id) {
     return res.status(422).send("Please provide agent id.")
   }
 
-  return await destroyLot({ agent_id: req.body.agent_id })
+  return await destroyLot({ agent_id: req.query.agent_id })
     .then((data) => {
       if (data[0]) {
         res.status(200).json({

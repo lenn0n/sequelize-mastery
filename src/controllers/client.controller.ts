@@ -1,5 +1,5 @@
-import { destroyClient, getClientList, insertClientInfo, updateClientInfo } from "@services/client.service";
 import { Request, Response } from "express";
+import { destroyClient, getClientList, insertClientInfo, updateClientInfo } from "@services/client.service";
 
 const retrieveClient = async (req: Request, res: Response) => {
   let query : { client_id?: number } = {};
@@ -73,11 +73,11 @@ const insertClient = async (req: Request, res: Response) => {
 }
 
 const removeClient = async (req: Request, res: Response) => {
-  if (!req.body.client_id) {
+  if (!req.query.client_id) {
     return res.status(422).send("Please provide client id.")
   }
 
-  return await destroyClient({ client_id: req.body.client_id })
+  return await destroyClient({ client_id: req.query.client_id })
     .then((deleted) => {
       if (deleted) {
         res.status(200).json({

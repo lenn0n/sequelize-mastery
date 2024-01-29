@@ -28,7 +28,11 @@ const insertMethodInfo = async (params: any) => {
 }
 
 const destroyMethod = async (params: any) => {
-  return await MethodModel.destroy(params)
+  return await MethodModel.destroy({
+    where: {
+      ...params
+    }
+  })
 }
 
 export {

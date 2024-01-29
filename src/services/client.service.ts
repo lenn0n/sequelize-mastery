@@ -28,7 +28,11 @@ const insertClientInfo = async (params: any) => {
 }
 
 const destroyClient = async (params: any) => {
-  return await ClientModel.destroy(params)
+  return await ClientModel.destroy({
+    where: {
+      ...params
+    }
+  })
 }
 
 export {

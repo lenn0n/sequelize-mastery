@@ -1,11 +1,48 @@
-import { insertAgent, removeAgent, retrieveAgent, updateAgent } from "@controllers/agent.controller";
-import { insertClient, removeClient, retrieveClient, updateClient } from "@controllers/client.controller";
-import { handleCountAvailableLot, updateLot, insertLot, retrieveLot, removeLot } from "@controllers/lot.controller";
-import { insertMethod, removeMethod, retrieveMethod, updateMethod } from "@controllers/method.controller";
-import { retrievePayment } from "@controllers/payment.controller";
-import { insertProject, removeProject, retrieveProject, updateProject } from "@controllers/project.controller";
-
 import { Router } from "express";
+
+import { 
+  handleCountAvailableLot, 
+  updateLot, 
+  insertLot, 
+  retrieveLot, 
+  removeLot 
+} from "@controllers/lot.controller";
+
+import { 
+  insertAgent, 
+  removeAgent, 
+  retrieveAgent, 
+  updateAgent 
+} from "@controllers/agent.controller";
+
+import { 
+  insertClient,
+  removeClient, 
+  retrieveClient, 
+  updateClient 
+} from "@controllers/client.controller";
+
+import { 
+  insertMethod, 
+  removeMethod, 
+  retrieveMethod, 
+  updateMethod 
+} from "@controllers/method.controller";
+
+import { 
+  insertPayment, 
+  removePayment, 
+  retrievePayment, 
+  updatePayment 
+} from "@controllers/payment.controller";
+
+import { 
+  insertProject, 
+  removeProject, 
+  retrieveProject, 
+  updateProject 
+} from "@controllers/project.controller";
+
 const router = Router();
 
 // Lot Services
@@ -41,8 +78,8 @@ router.delete("/method", removeMethod)
 
 // Payment Services
 router.get("/payment", retrievePayment)
-router.put("/payment", retrieveLot)
-router.post("/payment", retrieveLot)
-router.delete("/payment")
+router.put("/payment", updatePayment)
+router.post("/payment", insertPayment)
+router.delete("/payment", removePayment)
 
 export default router;
