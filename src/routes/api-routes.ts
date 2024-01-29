@@ -2,6 +2,7 @@ import { insertAgent, removeAgent, retrieveAgent, updateAgent } from "@controlle
 import { insertClient, removeClient, retrieveClient, updateClient } from "@controllers/client.controller";
 import { handleCountAvailableLot, updateLot, insertLot, retrieveLot, removeLot } from "@controllers/lot.controller";
 import { insertMethod, removeMethod, retrieveMethod, updateMethod } from "@controllers/method.controller";
+import { retrievePayment } from "@controllers/payment.controller";
 import { insertProject, removeProject, retrieveProject, updateProject } from "@controllers/project.controller";
 
 import { Router } from "express";
@@ -39,7 +40,7 @@ router.post("/method", insertMethod)
 router.delete("/method", removeMethod)
 
 // Payment Services
-router.get("/payment", retrieveLot)
+router.get("/payment", retrievePayment)
 router.put("/payment", retrieveLot)
 router.post("/payment", retrieveLot)
 router.delete("/payment")

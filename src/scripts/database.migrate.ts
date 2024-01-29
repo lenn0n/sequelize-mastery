@@ -58,11 +58,11 @@ const syncTableModels = async () => {
   await MethodModel.sync({ alter: true })
     .then(() => {
       console.info("Method model synced successfully!");
-      process.exit(0);
+
     })
     .catch(() => {
       console.log("ERR: An error occured while trying to sync Method model.");
-      process.exit(0);
+
     })
 
 }

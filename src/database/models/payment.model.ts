@@ -2,7 +2,7 @@ import { SequelizeInstance, DataTypes } from "@hooks/useSequelize";
 
 const PaymentModel = SequelizeInstance.define("payment",
   {
-    invoice_id: {
+    payment_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -16,6 +16,10 @@ const PaymentModel = SequelizeInstance.define("payment",
       allowNull: false,
     },
     method_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    lot_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
