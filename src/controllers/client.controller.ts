@@ -1,13 +1,13 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { destroyClient, getClientList, insertClientInfo, updateClientInfo } from "@services/client.service";
 
-const retrieveClient = async (req: Request, res: Response) => {
-  let query : { client_id?: number } = {};
+const retrieveClient = async (req: Request, res: Response, next: NextFunction) => {
+  let query: { client_id?: number } = {};
 
-  if (req.query.client_id){
+  if (req.query.client_id) {
     query['client_id'] = Number(req.query.client_id)
   }
-  return await getClientList({ 
+  return await getClientList({
     params: {
       attributes: {},
       where: {
@@ -18,9 +18,12 @@ const retrieveClient = async (req: Request, res: Response) => {
     .then((data) => {
       return res.status(200).json(data)
     })
+    .catch((err) => {
+      next()
+    })
 }
 
-const updateClient = async (req: Request, res: Response) => {
+const updateClient = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.client_id) {
     return res.status(422).send("Please provide client id.")
   }
@@ -46,9 +49,12 @@ const updateClient = async (req: Request, res: Response) => {
         })
       }
     })
+    .catch((err) => {
+      next()
+    })
 }
 
-const insertClient = async (req: Request, res: Response) => {
+const insertClient = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.name) {
     return res.status(422).send("Please provide client name.")
   }
@@ -70,9 +76,12 @@ const insertClient = async (req: Request, res: Response) => {
         })
       }
     })
+    .catch((err) => {
+      next()
+    })
 }
 
-const removeClient = async (req: Request, res: Response) => {
+const removeClient = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.query.client_id) {
     return res.status(422).send("Please provide client id.")
   }
@@ -89,6 +98,9 @@ const removeClient = async (req: Request, res: Response) => {
             "ERR: client.controlller.ts (deleteClient)",
         })
       }
+    })
+    .catch((err) => {
+      next()
     })
 }
 

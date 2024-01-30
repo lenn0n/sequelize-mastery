@@ -1,13 +1,13 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { destroyMethod, getMethodList, insertMethodInfo, updateMethodInfo } from "@services/method.service";
 
-const retrieveMethod = async (req: Request, res: Response) => {
-  let query : { method_id?: number } = {};
+const retrieveMethod = async (req: Request, res: Response, next: NextFunction) => {
+  let query: { method_id?: number } = {};
 
-  if (req.query.method_id){
+  if (req.query.method_id) {
     query['method_id'] = Number(req.query.method_id)
   }
-  return await getMethodList({ 
+  return await getMethodList({
     params: {
       attributes: {},
       where: {
@@ -18,9 +18,12 @@ const retrieveMethod = async (req: Request, res: Response) => {
     .then((data) => {
       return res.status(200).json(data)
     })
+    .catch((err) => {
+      next()
+    })
 }
 
-const updateMethod = async (req: Request, res: Response) => {
+const updateMethod = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.method_id) {
     return res.status(422).send("Please provide method id.")
   }
@@ -46,9 +49,12 @@ const updateMethod = async (req: Request, res: Response) => {
         })
       }
     })
+    .catch((err) => {
+      next()
+    })
 }
 
-const insertMethod = async (req: Request, res: Response) => {
+const insertMethod = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.name) {
     return res.status(422).send("Please provide method name.")
   }
@@ -70,9 +76,12 @@ const insertMethod = async (req: Request, res: Response) => {
         })
       }
     })
+    .catch((err) => {
+      next()
+    })
 }
 
-const removeMethod = async (req: Request, res: Response) => {
+const removeMethod = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.query.method_id) {
     return res.status(422).send("Please provide method id.")
   }
@@ -89,6 +98,9 @@ const removeMethod = async (req: Request, res: Response) => {
             "ERR: method.controlller.ts (deleteMethod)",
         })
       }
+    })
+    .catch((err) => {
+      next()
     })
 }
 

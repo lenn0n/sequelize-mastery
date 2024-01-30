@@ -1,24 +1,35 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { literal } from "@hooks/useSequelize";
-import { countAvailableUnits, destroyLot, getLotList, insertLotInformation, updateLotInfo } from "@services/lot.service"
+import { countAvailableUnits, destroyLot, getLotList, getOverallLot, insertLotInformation, updateLotInfo } from "@services/lot.service"
 
-const retrieveLot = async (req: Request, res: Response) => {
-  return await getLotList({
-    params: {
-      attributes: {
-        include: [
-          [literal(`(SELECT name FROM client WHERE client.client_id = lot.client_id)`), 'client_name'],
-          [literal(`(SELECT name FROM project WHERE project.project_id = lot.project_id)`), 'project_name'],
-          [literal(`(SELECT name FROM agent WHERE agent.agent_id = lot.agent_id)`), 'agent_name'],
-        ]
-      }
-    }
-  }).then((data) => {
-    res.status(200).json(data)
-  })
+const retrieveLot = async (req: Request, res: Response, next: NextFunction) => {
+  return await getLotList({})
+    .then((data) => {
+      res.status(200).json(data)
+    })
+    .catch((err) => {
+      next()
+    })
 }
 
-const handleCountAvailableLot = async (req: Request, res: Response) => {
+const retrieveOverallLot = async (req: Request, res: Response, next: NextFunction) => {
+  let payload = {};
+
+  if (req.query.project_id) {
+    payload = {
+      project_id: req.query.project_id
+    }
+  }
+  return await getOverallLot({ params: payload })
+    .then((data) => {
+      res.status(200).json(data)
+    })
+    .catch((err) => {
+      next()
+    })
+}
+
+const handleCountAvailableLot = async (req: Request, res: Response, next: NextFunction) => {
   // Check if category is present
   if (!req.query.category) {
     return res.status(422).send("Please provide category.")
@@ -35,12 +46,16 @@ const handleCountAvailableLot = async (req: Request, res: Response) => {
     project_id: req.query.project_id,
   }
 
-  return await countAvailableUnits(payload).then((data) => {
-    res.status(200).json(data)
-  })
+  return await countAvailableUnits(payload)
+    .then((data) => {
+      res.status(200).json(data)
+    })
+    .catch((err) => {
+      next()
+    })
 }
 
-const updateLot = async (req: Request, res: Response) => {
+const updateLot = async (req: Request, res: Response, next: NextFunction) => {
   // Check if project id is present
   if (!req.body.project_id) {
     return res.status(422).send("Please provide project.")
@@ -77,11 +92,12 @@ const updateLot = async (req: Request, res: Response) => {
     })
     .catch((err) => {
       res.status(422).send("There was a problem while updating lot information. " + "ERR: lot.controlller.ts (updateLotInfo)",)
+      next()
     })
 
 }
 
-const insertLot = async (req: Request, res: Response) => {
+const insertLot = async (req: Request, res: Response, next: NextFunction) => {
   // Check if 'AREA' is present.
   if (!req.body.project_id) {
     return res.status(422).send("Please provide project id.")
@@ -117,10 +133,11 @@ const insertLot = async (req: Request, res: Response) => {
     .catch((err) => {
       res.status(422).send("There was a problem inserting lot information." +
         "ERR: lot.controlller.ts (insertLot)" + err)
+      next()
     })
 }
 
-const removeLot = async (req: Request, res: Response) => {
+const removeLot = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.query.agent_id) {
     return res.status(422).send("Please provide agent id.")
   }
@@ -138,6 +155,9 @@ const removeLot = async (req: Request, res: Response) => {
         })
       }
     })
+    .catch((err) => {
+      next()
+    })
 }
 
 
@@ -146,5 +166,6 @@ export {
   insertLot,
   handleCountAvailableLot,
   updateLot,
-  removeLot
+  removeLot,
+  retrieveOverallLot
 }

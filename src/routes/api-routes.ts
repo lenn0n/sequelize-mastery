@@ -5,7 +5,8 @@ import {
   updateLot, 
   insertLot, 
   retrieveLot, 
-  removeLot 
+  removeLot, 
+  retrieveOverallLot
 } from "@controllers/lot.controller";
 
 import { 
@@ -51,6 +52,7 @@ router.put("/lot", updateLot)
 router.post("/lot", insertLot)
 router.delete("/lot", removeLot)
 router.get("/lot/available", handleCountAvailableLot)
+router.get("/lot/overall", retrieveOverallLot)
 
 // Agent Services
 router.get("/agent", retrieveAgent)

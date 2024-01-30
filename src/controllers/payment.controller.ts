@@ -1,8 +1,8 @@
-import { Request, Response } from "express"
+import { Request, Response, NextFunction } from "express"
 import { Op, literal } from "@hooks/useSequelize"
 import { destroyPayment, getPaymentList, insertPaymentInfo, updatePaymentInfo } from "@services/payment.service"
 
-const retrievePayment = async (req: Request, res: Response) => {
+const retrievePayment = async (req: Request, res: Response, next: NextFunction) => {
   let filter: any = [], limit = 10, offset = 0, reqQuery = req.query;
 
   // Filter by Payment ID
@@ -26,7 +26,7 @@ const retrievePayment = async (req: Request, res: Response) => {
   }
 
   let payload = {
-    attributes:{
+    attributes: {
       include: [
         [literal(`(SELECT name FROM method WHERE method.method_id = payment.method_id)`), 'method'],
         [literal(`(SELECT name FROM client WHERE client.client_id = payment.client_id)`), 'client'],
@@ -43,9 +43,12 @@ const retrievePayment = async (req: Request, res: Response) => {
     .then((data) => {
       res.status(200).json(data)
     })
+    .catch((err) => {
+      next()
+    })
 }
 
-const insertPayment = async (req: Request, res: Response) => {
+const insertPayment = async (req: Request, res: Response, next: NextFunction) => {
   // Check if project ID is present.
   if (!req.body.project_id) {
     return res.status(422).send("Please provide project ID.")
@@ -59,6 +62,11 @@ const insertPayment = async (req: Request, res: Response) => {
   // Check if lot id is present.
   if (!req.body.lot_id) {
     return res.status(422).send("Please provide lot ID.")
+  }
+
+  // Check if client id is present.
+  if (!req.body.client_id) {
+    return res.status(422).send("Please provide client ID.")
   }
 
   // Check if type is present.
@@ -88,14 +96,15 @@ const insertPayment = async (req: Request, res: Response) => {
       }
     })
     .catch((err) => {
-      return res.status(422).json({
+      res.status(422).json({
         message: "Couldn't insert payment. " +
           "ERR: payment.controlller.ts (insertPayment)",
       })
+      next()
     })
 }
 
-const updatePayment = async (req: Request, res: Response) => {
+const updatePayment = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.payment_id) {
     return res.status(422).send("Please provide payment ID.")
   }
@@ -121,9 +130,12 @@ const updatePayment = async (req: Request, res: Response) => {
         })
       }
     })
+    .catch((err) => {
+      next()
+    })
 }
 
-const removePayment = async (req: Request, res: Response) => {
+const removePayment = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.query.payment_id) {
     return res.status(422).send("Please provide payment ID.")
   }
@@ -140,6 +152,9 @@ const removePayment = async (req: Request, res: Response) => {
             "ERR: payment.controlller.ts (removePayment)",
         })
       }
+    })
+    .catch((err) => {
+      next()
     })
 }
 

@@ -1,13 +1,13 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { destroyAgent, getAgentList, insertAgentInfo, updateAgentInfo } from "@services/agent.service";
 
-const retrieveAgent = async (req: Request, res: Response) => {
-  let query : { agent_id?: number } = {};
+const retrieveAgent = async (req: Request, res: Response, next: NextFunction) => {
+  let query: { agent_id?: number } = {};
 
-  if (req.query.agent_id){
+  if (req.query.agent_id) {
     query['agent_id'] = Number(req.query.agent_id)
   }
-  return await getAgentList({ 
+  return await getAgentList({
     params: {
       attributes: {},
       where: {
@@ -18,9 +18,12 @@ const retrieveAgent = async (req: Request, res: Response) => {
     .then((data) => {
       return res.status(200).json(data)
     })
+    .catch((err) => {
+      next()
+    })
 }
 
-const updateAgent = async (req: Request, res: Response) => {
+const updateAgent = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.agent_id) {
     return res.status(422).send("Please provide agent id.")
   }
@@ -46,9 +49,12 @@ const updateAgent = async (req: Request, res: Response) => {
         })
       }
     })
+    .catch((err) => {
+      next()
+    })
 }
 
-const insertAgent = async (req: Request, res: Response) => {
+const insertAgent = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.name) {
     return res.status(422).send("Please provide agent name.")
   }
@@ -70,9 +76,12 @@ const insertAgent = async (req: Request, res: Response) => {
         })
       }
     })
+    .catch((err) => {
+      next()
+    })
 }
 
-const removeAgent = async (req: Request, res: Response) => {
+const removeAgent = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.query.agent_id) {
     return res.status(422).send("Please provide agent id.")
   }
@@ -89,6 +98,9 @@ const removeAgent = async (req: Request, res: Response) => {
             "ERR: agent.controlller.ts (deleteAgent)",
         })
       }
+    })
+    .catch((err) => {
+      next()
     })
 }
 

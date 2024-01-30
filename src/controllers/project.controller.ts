@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { destroyProject, getProjectList, insertProjectInfo, updateProjectInfo } from "@services/project.service";
 
-const retrieveProject = async (req: Request, res: Response) => {
+const retrieveProject = async (req: Request, res: Response, next: NextFunction) => {
   let query : { project_id?: number } = {};
 
   if (req.query.project_id){
@@ -20,7 +20,7 @@ const retrieveProject = async (req: Request, res: Response) => {
     })
 }
 
-const updateProject = async (req: Request, res: Response) => {
+const updateProject = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.project_id) {
     return res.status(422).send("Please provide project id.")
   }
@@ -48,7 +48,7 @@ const updateProject = async (req: Request, res: Response) => {
     })
 }
 
-const insertProject = async (req: Request, res: Response) => {
+const insertProject = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.name) {
     return res.status(422).send("Please provide project name.")
   }
@@ -72,7 +72,7 @@ const insertProject = async (req: Request, res: Response) => {
     })
 }
 
-const removeProject = async (req: Request, res: Response) => {
+const removeProject = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.query.project_id) {
     return res.status(422).send("Please provide project id.")
   }
