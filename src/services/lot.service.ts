@@ -1,5 +1,6 @@
 import { LotModel } from "@database/models/lot.model";
-import { SequelizeInstance, QueryTypes, Op, literal } from "@hooks/useSequelize";
+import { PaymentModel } from "@database/models/payment.model";
+import { SequelizeInstance, QueryTypes, Op, literal, fn, col } from "@hooks/useSequelize";
 
 type QueryParams = {
   params?: any
@@ -34,23 +35,29 @@ const getLotList = async ({ params }: QueryParams) => {
 }
 
 const getOverallLot = async ({ params }: QueryParams) => {
-  let raw_receivables = await SequelizeInstance.query(`
-  SELECT SUM(( (sqm * price_per_sqm) - ( (sqm * price_per_sqm) * ( discount / 100) ) )) 
-  as r FROM lot WHERE project_id = ${params?.project_id}`,
-    {
-      raw: true,
-      type: QueryTypes.SELECT
-    })
-  let collectibles = await SequelizeInstance.query(`
-    SELECT SUM(amount) as c FROM payment WHERE project_id = ${params?.project_id}`,
-    {
-      raw: true,
-      type: QueryTypes.SELECT
-    })
+  let raw_receivables = await LotModel.findAll({
+    attributes: [
+      [
+        literal(
+          `SUM(( (sqm * price_per_sqm) - ( (sqm * price_per_sqm) * ( discount / 100) ) )) `), 'R'
+      ],
+    ],
+    where: params,
+    raw: true
+  })
+
+  let collectibles = await PaymentModel.findAll({
+    attributes: [
+      [fn('SUM', col('amount')), 'C']
+    ],
+    where: params,
+    raw: true
+  })
+
 
   return {
-    receivables: Number(raw_receivables[0]['r'] ) - Number(collectibles[0]['c'] ),
-    collectibles: Number(collectibles[0]['c'] )
+    receivables: Number(raw_receivables[0]['R']) - Number(collectibles[0]['C']),
+    collectibles: Number(collectibles[0]['C'])
   }
 }
 
@@ -73,7 +80,6 @@ const countAvailableUnits = async (params?: {}) => {
 
 type UpdateDiscountType = {
   fields: {},
-  project_id: number,
   lot_id: number
 }
 
@@ -81,7 +87,6 @@ const updateLotInfo = async (payload: UpdateDiscountType) => {
   return await LotModel.update({ ...payload.fields }, {
     where: {
       [Op.and]: [
-        { project_id: payload.project_id },
         { lot_id: payload.lot_id },
       ]
     }

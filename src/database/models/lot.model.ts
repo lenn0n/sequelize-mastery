@@ -38,7 +38,8 @@ const LotModel = SequelizeInstance.define("lot",
       defaultValue: "None"
     },
     discount: {
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     },
   },
   {

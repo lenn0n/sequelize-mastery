@@ -56,11 +56,6 @@ const handleCountAvailableLot = async (req: Request, res: Response, next: NextFu
 }
 
 const updateLot = async (req: Request, res: Response, next: NextFunction) => {
-  // Check if project id is present
-  if (!req.body.project_id) {
-    return res.status(422).send("Please provide project.")
-  }
-
   // Check if lot id is present
   if (!req.body.lot_id) {
     return res.status(422).send("Please provide lot.")
@@ -69,10 +64,8 @@ const updateLot = async (req: Request, res: Response, next: NextFunction) => {
   // Construct payload
   const payload = {
     lot_id: req.body.lot_id,
-    project_id: req.body.project_id,
     fields: {
       ...req.body,
-      project_id: undefined,
       lot_id: undefined
     }
   }
