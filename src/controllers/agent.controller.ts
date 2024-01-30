@@ -104,9 +104,14 @@ const removeAgent = async (req: Request, res: Response, next: NextFunction) => {
     })
 }
 
+const getTopAgent = async () => {
+  
+}
+
 export {
   retrieveAgent,
   updateAgent,
   removeAgent,
-  insertAgent
+  insertAgent,
+  getTopAgent
 }
