@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { destroyAgent, getAgentList, insertAgentInfo, updateAgentInfo } from "@services/agent.service";
+import { destroyAgent, getAgentList, insertAgentInfo, retrieveTopAgent, updateAgentInfo } from "@services/agent.service";
 
 const retrieveAgent = async (req: Request, res: Response, next: NextFunction) => {
   let query: { agent_id?: number } = {};
@@ -104,8 +104,11 @@ const removeAgent = async (req: Request, res: Response, next: NextFunction) => {
     })
 }
 
-const getTopAgent = async () => {
-  
+const getTopAgent = async (req: Request, res: Response, next: NextFunction) => {
+  return await retrieveTopAgent()
+  .then((data) => {
+    return res.status(200).json(data)
+  })
 }
 
 export {

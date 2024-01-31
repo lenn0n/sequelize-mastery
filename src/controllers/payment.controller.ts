@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import { Op, literal } from "@hooks/useSequelize"
-import { destroyPayment, getPaymentList, insertPaymentInfo, updatePaymentInfo } from "@services/payment.service"
+import { destroyPayment, getPaymentList, insertPaymentInfo, retrieveTotalCollectibles, updatePaymentInfo } from "@services/payment.service"
 
 const retrievePayment = async (req: Request, res: Response, next: NextFunction) => {
   let filter: any = [], limit = 10, offset = 0, reqQuery = req.query;
@@ -158,9 +158,20 @@ const removePayment = async (req: Request, res: Response, next: NextFunction) =>
     })
 }
 
+const getTotalCollectibles = async (req: Request, res: Response, next: NextFunction) => { 
+  return await retrieveTotalCollectibles(req.query)
+  .then((data) => {
+    res.status(200).json(data)
+  })
+  .catch((err) => {
+    next()
+  })
+}
+
 export {
   retrievePayment,
   insertPayment,
   updatePayment,
-  removePayment
+  removePayment,
+  getTotalCollectibles
 }

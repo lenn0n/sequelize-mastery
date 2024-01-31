@@ -10,6 +10,7 @@ import {
 } from "@controllers/lot.controller";
 
 import { 
+  getTopAgent,
   insertAgent, 
   removeAgent, 
   retrieveAgent, 
@@ -31,6 +32,7 @@ import {
 } from "@controllers/method.controller";
 
 import { 
+  getTotalCollectibles,
   insertPayment, 
   removePayment, 
   retrievePayment, 
@@ -59,6 +61,7 @@ router.get("/agent", retrieveAgent)
 router.put("/agent", updateAgent)
 router.post("/agent", insertAgent)
 router.delete("/agent", removeAgent)
+router.get("/agent/top", getTopAgent)
 
 // Client Services
 router.get("/client", retrieveClient)
@@ -83,5 +86,6 @@ router.get("/payment", retrievePayment)
 router.put("/payment", updatePayment)
 router.post("/payment", insertPayment)
 router.delete("/payment", removePayment)
+router.get("/payment/collectibles", getTotalCollectibles)
 
 export default router;
