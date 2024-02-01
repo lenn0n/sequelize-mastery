@@ -7,7 +7,7 @@ const ClientModel = SequelizeInstance.define("client",
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    client_name: {
       type: DataTypes.STRING(50),
       allowNull: false
     }

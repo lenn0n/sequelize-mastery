@@ -10,6 +10,7 @@ import {
 } from "@controllers/lot.controller";
 
 import { 
+  getAgentCount,
   getTopAgent,
   insertAgent, 
   removeAgent, 
@@ -18,6 +19,7 @@ import {
 } from "@controllers/agent.controller";
 
 import { 
+  getClientCount,
   insertClient,
   removeClient, 
   retrieveClient, 
@@ -62,12 +64,14 @@ router.put("/agent", updateAgent)
 router.post("/agent", insertAgent)
 router.delete("/agent", removeAgent)
 router.get("/agent/top", getTopAgent)
+router.get("/agent/count", getAgentCount)
 
 // Client Services
 router.get("/client", retrieveClient)
 router.put("/client", updateClient)
 router.post("/client", insertClient)
 router.delete("/client", removeClient)
+router.get("/client/count", getClientCount)
 
 // Project Services
 router.get("/project", retrieveProject)

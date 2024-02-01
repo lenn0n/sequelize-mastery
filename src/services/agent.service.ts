@@ -1,5 +1,4 @@
 import { AgentModel } from "@database/models/agent.model";
-import { LotModel } from "@database/models/lot.model";
 import { SequelizeInstance, QueryTypes, Op, literal, fn, col } from "@hooks/useSequelize";
 
 const getAgentList = async ({ params }: any) => {
@@ -41,16 +40,12 @@ const destroyAgent = async (params: any) => {
 
 const retrieveTopAgent = async () => {
   // Retrieve agent with the highest sales of all time.
-  return await LotModel.findOne({
+  return await AgentModel.findAll({
     attributes: [
       [
-        literal(`(SELECT SUM(amount) FROM payment as p WHERE p.lot_id = lot.lot_id AND p.project_id = lot.project_id)`),
-        'collectibles'
+        literal("(SELECT SUM(amount) FROM payment as P JOIN lot as L ON P.lot_id = L.lot_id WHERE agent.agent_id = L.agent_id)", ), 'collectibles'
       ],
-      [
-        literal(`(SELECT name FROM agent WHERE agent.agent_id = lot.agent_id)`),
-        'agent_name'
-      ],
+      "agent_name"
     ],
     order: [
       [
@@ -60,10 +55,15 @@ const retrieveTopAgent = async () => {
   },)
 }
 
+const countAgent = async () => {
+  return await AgentModel.count()
+}
+
 export {
   getAgentList,
   updateAgentInfo,
   insertAgentInfo,
   destroyAgent,
-  retrieveTopAgent
+  retrieveTopAgent,
+  countAgent
 }

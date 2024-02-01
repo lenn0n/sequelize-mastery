@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { destroyClient, getClientList, insertClientInfo, updateClientInfo } from "@services/client.service";
+import { countClient, destroyClient, getClientList, insertClientInfo, updateClientInfo } from "@services/client.service";
 
 const retrieveClient = async (req: Request, res: Response, next: NextFunction) => {
   let query: { client_id?: number } = {};
@@ -104,9 +104,17 @@ const removeClient = async (req: Request, res: Response, next: NextFunction) => 
     })
 }
 
+const getClientCount = async (req: Request, res: Response, next: NextFunction) => {
+  return await countClient()
+  .then((data) => {
+    return res.status(200).json(data)
+  })
+}
+
 export {
   retrieveClient,
   updateClient,
   removeClient,
-  insertClient
+  insertClient,
+  getClientCount
 }

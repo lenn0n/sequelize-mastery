@@ -7,7 +7,7 @@ const AgentModel = SequelizeInstance.define("agent",
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    agent_name: {
       type: DataTypes.STRING(50),
       allowNull: false
     }

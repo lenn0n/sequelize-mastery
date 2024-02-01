@@ -23,10 +23,6 @@ const PaymentModel = SequelizeInstance.define("payment",
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    client_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
     remarks: {
       type: DataTypes.STRING(255),
       defaultValue: "None"

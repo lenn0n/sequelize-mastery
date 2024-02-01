@@ -9,9 +9,9 @@ const getLotList = async ({ params }: QueryParams) => {
   return await LotModel.findAll({
     attributes: {
       include: [
-        [literal(`(SELECT name FROM client WHERE client.client_id = lot.client_id)`), 'client_name'],
-        [literal(`(SELECT name FROM project WHERE project.project_id = lot.project_id)`), 'project_name'],
-        [literal(`(SELECT name FROM agent WHERE agent.agent_id = lot.agent_id)`), 'agent_name'],
+        [literal(`(SELECT client_name FROM client WHERE client.client_id = lot.client_id)`), 'client_name'],
+        [literal(`(SELECT project_name FROM project WHERE project.project_id = lot.project_id)`), 'project_name'],
+        [literal(`(SELECT agent_name FROM agent WHERE agent.agent_id = lot.agent_id)`), 'agent_name'],
         [literal(`(SELECT SUM(amount) FROM payment as p WHERE p.lot_id = lot.lot_id AND p.project_id = lot.project_id)`), 'collectibles'],
       ],
       exclude: ['createdAt', 'updatedAt']
@@ -39,13 +39,13 @@ const getOverallLot = async ({ params }: QueryParams) => {
     attributes: [
       [
         literal(
-          `SUM(( (sqm * price_per_sqm) - ( (sqm * price_per_sqm) * ( discount / 100) ) )) `), 'R'
+          `SUM( ( (sqm * price_per_sqm) - ( (sqm * price_per_sqm) * ( discount / 100) ) ) )`), 'R'
       ],
     ],
     where: params,
     raw: true
   })
-
+  
   let collectibles = await PaymentModel.findAll({
     attributes: [
       [fn('SUM', col('amount')), 'C']

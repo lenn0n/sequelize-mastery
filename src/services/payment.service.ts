@@ -30,7 +30,7 @@ const destroyPayment = async (params: any) => {
 const retrieveTotalCollectibles = async (params: any) => {
   return await PaymentModel.findAll({
     attributes: [
-      [fn("SUM", col("amount")), 'total']
+      [fn("SUM", col("amount")), 'total'],
     ],
     where: {
       ...params // WHERE method_id = 1 (Bank Transfer)

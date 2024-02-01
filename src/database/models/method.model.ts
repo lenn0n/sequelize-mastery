@@ -7,7 +7,7 @@ const MethodModel = SequelizeInstance.define("method",
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    method_name: {
       type: DataTypes.STRING(255),
       allowNull: false
     },

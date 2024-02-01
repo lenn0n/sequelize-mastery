@@ -35,9 +35,14 @@ const destroyClient = async (params: any) => {
   })
 }
 
+const countClient = async () => {
+  return await ClientModel.count()
+}
+
 export {
   getClientList,
   updateClientInfo,
   insertClientInfo,
-  destroyClient
+  destroyClient,
+  countClient
 }

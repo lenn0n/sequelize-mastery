@@ -7,7 +7,7 @@ const ProjectModel = SequelizeInstance.define("project",
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    project_name: {
       type: DataTypes.STRING(50),
       allowNull: false
     }

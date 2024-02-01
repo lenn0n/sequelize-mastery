@@ -28,8 +28,9 @@ const retrievePayment = async (req: Request, res: Response, next: NextFunction) 
   let payload = {
     attributes: {
       include: [
-        [literal(`(SELECT name FROM method WHERE method.method_id = payment.method_id)`), 'method'],
-        [literal(`(SELECT name FROM client WHERE client.client_id = payment.client_id)`), 'client'],
+        [literal(`(SELECT method_name FROM method WHERE method.method_id = payment.method_id)`), 'method'],
+        [literal(`(SELECT C.client_name FROM lot as L JOIN client as C USING(client_id) WHERE L.lot_id = payment.lot_id )`), 'client'],
+        [literal(`(SELECT A.agent_name FROM lot as L JOIN agent as A USING(agent_id) WHERE L.lot_id = payment.lot_id )`), 'agent'],
       ]
     },
     where: {
@@ -62,11 +63,6 @@ const insertPayment = async (req: Request, res: Response, next: NextFunction) =>
   // Check if lot id is present.
   if (!req.body.lot_id) {
     return res.status(422).send("Please provide lot ID.")
-  }
-
-  // Check if client id is present.
-  if (!req.body.client_id) {
-    return res.status(422).send("Please provide client ID.")
   }
 
   // Check if type is present.
