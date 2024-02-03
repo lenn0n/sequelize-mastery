@@ -25,6 +25,25 @@ const updateClientInfo = async (payload: UpdateClientType) => {
 
 const insertClientInfo = async (params: any) => {
   return await ClientModel.create(params)
+    .then(() => {
+      return {
+        result: true
+      }
+    })
+    .catch((err: any) => {
+      let messageError = ""
+      err.errors.map((data: any) => {
+        if (data.type == 'unique violation') {
+          messageError = `The client name was already taken. (${data.value})`
+        } else {
+          messageError = data.message
+        }
+      })
+      return {
+        result: false,
+        message: messageError
+      }
+    })
 }
 
 const destroyClient = async (params: any) => {

@@ -2,12 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { destroyProject, getProjectList, insertProjectInfo, updateProjectInfo } from "@services/project.service";
 
 const retrieveProject = async (req: Request, res: Response, next: NextFunction) => {
-  let query : { project_id?: number } = {};
+  let query: { project_id?: number } = {};
 
-  if (req.query.project_id){
+  if (req.query.project_id) {
     query['project_id'] = Number(req.query.project_id)
   }
-  return await getProjectList({ 
+  return await getProjectList({
     params: {
       attributes: {},
       where: {
@@ -49,7 +49,7 @@ const updateProject = async (req: Request, res: Response, next: NextFunction) =>
 }
 
 const insertProject = async (req: Request, res: Response, next: NextFunction) => {
-  if (!req.body.name) {
+  if (!req.body.project_name) {
     return res.status(422).send("Please provide project name.")
   }
 
@@ -58,15 +58,17 @@ const insertProject = async (req: Request, res: Response, next: NextFunction) =>
   }
 
   return await insertProjectInfo(payload)
-    .then((inserted) => {
-      if (inserted) {
+    .then((data) => {
+      if (data.result) {
         res.status(200).json({
           message: "Project added successfully",
         })
       } else {
+        console.log("Couldn't create project. " +
+          "ERR: project.controlller.ts (insertProject)");
+
         res.status(422).json({
-          message: "Couldn't create project. " +
-            "ERR: project.controlller.ts (insertProject)",
+          message: "Couldn't create project. " + data.message,
         })
       }
     })

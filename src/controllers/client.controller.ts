@@ -55,7 +55,7 @@ const updateClient = async (req: Request, res: Response, next: NextFunction) => 
 }
 
 const insertClient = async (req: Request, res: Response, next: NextFunction) => {
-  if (!req.body.name) {
+  if (!req.body.client_name) {
     return res.status(422).send("Please provide client name.")
   }
 
@@ -64,21 +64,20 @@ const insertClient = async (req: Request, res: Response, next: NextFunction) => 
   }
 
   return await insertClientInfo(payload)
-    .then((inserted) => {
-      if (inserted) {
-        res.status(200).json({
-          message: "Client added successfully",
-        })
-      } else {
-        res.status(422).json({
-          message: "Couldn't create client. " +
-            "ERR: client.controlller.ts (insertClient)",
-        })
-      }
-    })
-    .catch((err) => {
-      next()
-    })
+  .then((data) => {
+    if (data.result) {
+      res.status(200).json({
+        message: "Client added successfully",
+      })
+    } else {
+      console.log("Couldn't create client. " +
+        "ERR: client.controlller.ts (insertClient)");
+
+      res.status(422).json({
+        message: "Couldn't create client. " + data.message,
+      })
+    }
+  })
 }
 
 const removeClient = async (req: Request, res: Response, next: NextFunction) => {

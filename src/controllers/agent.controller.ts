@@ -55,7 +55,7 @@ const updateAgent = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const insertAgent = async (req: Request, res: Response, next: NextFunction) => {
-  if (!req.body.name) {
+  if (!req.body.agent_name) {
     return res.status(422).send("Please provide agent name.")
   }
 
@@ -64,20 +64,19 @@ const insertAgent = async (req: Request, res: Response, next: NextFunction) => {
   }
 
   return await insertAgentInfo(payload)
-    .then((inserted) => {
-      if (inserted) {
+    .then((data) => {
+      if (data.result) {
         res.status(200).json({
           message: "Agent added successfully",
         })
       } else {
+        console.log("Couldn't create agent. " +
+          "ERR: agent.controlller.ts (insertAgent)");
+
         res.status(422).json({
-          message: "Couldn't create agent. " +
-            "ERR: agent.controlller.ts (insertAgent)",
+          message: "Couldn't create agent. " + data.message,
         })
       }
-    })
-    .catch((err) => {
-      next()
     })
 }
 
@@ -106,16 +105,16 @@ const removeAgent = async (req: Request, res: Response, next: NextFunction) => {
 
 const getTopAgent = async (req: Request, res: Response, next: NextFunction) => {
   return await retrieveTopAgent()
-  .then((data) => {
-    return res.status(200).json(data)
-  })
+    .then((data) => {
+      return res.status(200).json(data)
+    })
 }
 
 const getAgentCount = async (req: Request, res: Response, next: NextFunction) => {
   return await countAgent()
-  .then((data) => {
-    return res.status(200).json(data)
-  })
+    .then((data) => {
+      return res.status(200).json(data)
+    })
 }
 
 export {

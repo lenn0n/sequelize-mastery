@@ -9,7 +9,8 @@ const ClientModel = SequelizeInstance.define("client",
     },
     client_name: {
       type: DataTypes.STRING(50),
-      allowNull: false
+      allowNull: false,
+      unique: true
     }
   },
   {

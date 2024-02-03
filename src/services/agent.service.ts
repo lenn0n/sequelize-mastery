@@ -25,9 +25,26 @@ const updateAgentInfo = async (payload: UpdateAgentType) => {
 }
 
 const insertAgentInfo = async (params: any) => {
-  return await AgentModel.create(params).catch((err: any) => {
-    console.log(err);
-  })
+  return await AgentModel.create(params)
+    .then(() => {
+      return {
+        result: true
+      }
+    })
+    .catch((err: any) => {
+      let messageError = ""
+      err.errors.map((data: any) => {
+        if (data.type == 'unique violation') {
+          messageError = `The agent name was already taken. (${data.value})`
+        } else {
+          messageError = data.message
+        }
+      })
+      return {
+        result: false,
+        message: messageError
+      }
+    })
 }
 
 const destroyAgent = async (params: any) => {
@@ -43,7 +60,7 @@ const retrieveTopAgent = async () => {
   return await AgentModel.findAll({
     attributes: [
       [
-        literal("(SELECT SUM(amount) FROM payment as P JOIN lot as L ON P.lot_id = L.lot_id WHERE agent.agent_id = L.agent_id)", ), 'collectibles'
+        literal("(SELECT SUM(amount) FROM payment as P JOIN lot as L ON P.lot_id = L.lot_id WHERE agent.agent_id = L.agent_id)",), 'collectibles'
       ],
       "agent_name"
     ],

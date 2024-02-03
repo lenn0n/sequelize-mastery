@@ -25,6 +25,25 @@ const updateProjectInfo = async (payload: UpdateProjectType) => {
 
 const insertProjectInfo = async (params: any) => {
   return await ProjectModel.create(params)
+  .then(() => {
+    return {
+      result: true
+    }
+  })
+  .catch((err: any) => {
+    let messageError = ""
+    err.errors.map((data: any) => {
+      if (data.type == 'unique violation') {
+        messageError = `The project name was already in the system. (${data.value})`
+      } else {
+        messageError = data.message
+      }
+    })
+    return {
+      result: false,
+      message: messageError
+    }
+  })
 }
 
 const destroyProject = async (params: any) => {
