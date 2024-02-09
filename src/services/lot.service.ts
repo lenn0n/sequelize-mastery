@@ -1,6 +1,6 @@
 import { LotModel } from "@database/models/lot.model";
 import { PaymentModel } from "@database/models/payment.model";
-import { SequelizeInstance, QueryTypes, Op, literal, fn, col } from "@hooks/useSequelize";
+import { Op, literal, fn, col } from "@hooks/useSequelize";
 
 type QueryParams = {
   params?: any

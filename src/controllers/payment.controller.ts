@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express"
-import { Op, literal } from "@hooks/useSequelize"
 import { destroyPayment, getPaymentList, insertPaymentInfo, retrieveTotalCollectibles, updatePaymentInfo } from "@services/payment.service"
 
 const retrievePayment = async (req: Request, res: Response, next: NextFunction) => {
@@ -25,22 +24,7 @@ const retrievePayment = async (req: Request, res: Response, next: NextFunction) 
     offset = (Number(reqQuery?.page) - 1) * limit
   }
 
-  let payload = {
-    attributes: {
-      include: [
-        [literal(`(SELECT method_name FROM method WHERE method.method_id = payment.method_id)`), 'method'],
-        [literal(`(SELECT C.client_name FROM lot as L JOIN client as C USING(client_id) WHERE L.lot_id = payment.lot_id )`), 'client'],
-        [literal(`(SELECT A.agent_name FROM lot as L JOIN agent as A USING(agent_id) WHERE L.lot_id = payment.lot_id )`), 'agent'],
-      ]
-    },
-    where: {
-      [Op.and]: filter
-    },
-    limit,
-    offset
-  }
-
-  return await getPaymentList(payload)
+  return await getPaymentList(filter, limit, offset)
     .then((data) => {
       res.status(200).json(data)
     })

@@ -8,63 +8,19 @@ import { AgentModel } from "@database/models/agent.model";
 import { ProjectModel } from "@database/models/project.model";
 import { PaymentModel } from "@database/models/payment.model";
 import { MethodModel } from "@database/models/method.model";
+import { SequelizeInstance } from "@hooks/useSequelize";
 
 const syncTableModels = async () => {
   console.warn("Syncing models...");
 
-  await ProjectModel.sync({ alter: true })
-    .then(() => {
-      console.info("Project model synced successfully!");
-    })
-    .catch(() => {
-      console.log("ERR: An error occured while trying to sync project model.");
+  LotModel.belongsTo(ClientModel, { foreignKey: 'client_id'})
+  LotModel.belongsTo(AgentModel, { foreignKey: 'agent_id'})
+  LotModel.belongsTo(ProjectModel, { foreignKey: 'project_id'})
+  PaymentModel.belongsTo(MethodModel, { foreignKey: 'method_id'})
+  PaymentModel.belongsTo(LotModel, { foreignKey: 'lot_id'})
+  PaymentModel.belongsTo(ProjectModel, { foreignKey: 'project_id'})
 
-    })
-
-  await LotModel.sync({ alter: true })
-    .then(() => {
-      console.info("Lot model synced successfully!");
-    })
-    .catch(() => {
-      console.log("ERR: An error occured while trying to sync lot model.");
-
-    })
-
-  await ClientModel.sync({ alter: true })
-    .then(() => {
-      console.info("Client model synced successfully!");
-    })
-    .catch(() => {
-      console.log("ERR: An error occured while trying to sync client model.");
-    })
-
-  await AgentModel.sync({ alter: true })
-    .then(() => {
-      console.info("Agent model synced successfully!");
-    })
-    .catch((err: any) => {
-      console.log("ERR: An error occured while trying to sync agent model.", err);
-    })
-
-  await PaymentModel.sync({ alter: true })
-    .then(() => {
-      console.info("Payment model synced successfully!");
-    })
-    .catch(() => {
-      console.log("ERR: An error occured while trying to sync Payment model.");
-
-    })
-
-  await MethodModel.sync({ alter: true })
-    .then(() => {
-      console.info("Method model synced successfully!");
-
-    })
-    .catch(() => {
-      console.log("ERR: An error occured while trying to sync Method model.");
-
-    })
-
+  SequelizeInstance.sync()
 }
 
 createDatabase()

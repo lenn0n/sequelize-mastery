@@ -15,21 +15,9 @@ const PaymentModel = SequelizeInstance.define("payment",
       type: DataTypes.DOUBLE,
       allowNull: false,
     },
-    method_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    project_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
     remarks: {
       type: DataTypes.STRING(255),
       defaultValue: "None"
-    },
-    lot_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
     },
     transaction_number: {
       type: DataTypes.STRING(255),
